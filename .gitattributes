@@ -6,6 +6,17 @@
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
 
+# 必须保持 LF 的配置/构建文件：
+# Dockerfile 出现 CRLF 时，多行 RUN 的 "\\" 续行可能解析失败；
+# .dockerignore / .gitignore 带 CRLF 会让模式带尾随 \r 而匹配不到。
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+.gitignore text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.sh text eol=lf
+
 # 二进制文件：不做换行转换，diff 按 binary 处理
 *.png binary
 *.jpg binary
