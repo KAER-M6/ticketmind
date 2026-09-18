@@ -1,9 +1,10 @@
 # 换行符规范化：仓库内统一 LF，避免跨平台提交产生 diff 噪音
 * text=auto
+
+# Windows 脚本：检出时必须保持 CRLF（纯 LF 会让 cmd 的 goto / 标签失效）
 *.bat text eol=crlf
-*.ps1 text eol=crlf
 *.cmd text eol=crlf
-*.vbs text eol=crlf
+*.ps1 text eol=crlf
 
 # 二进制文件：不做换行转换，diff 按 binary 处理
 *.png binary
@@ -13,3 +14,8 @@
 *.parquet binary
 *.db binary
 *.zip binary
+
+# scripts/create_shortcut.vbs 以 UTF-16LE + BOM 保存（脚本宿主按 ANSI 解析，
+# UTF-8 存中文会乱码）。若按文本处理，git 的 CRLF 转换会在双字节字符间插入
+# 孤立 0x0D 而破坏编码，因此显式声明为二进制。
+*.vbs binary
