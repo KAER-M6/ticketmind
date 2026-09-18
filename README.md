@@ -25,6 +25,20 @@
 - **中文工单支持（语言桥接层）**：知识库是 19,782 条英文历史工单，而 BM25 的 token 切分与 MiniLM 都是英文的——实测中文直查召回 5 条全不相关。因此在检索前加一层桥接：检测到中文时用 1 次 LLM 调用把工单转写成英文检索查询再进原流程；英文工单零额外开销，转写结果带缓存，返回中文或调用失败一律回落原文。回复语言默认跟随工单（中文工单出中文草稿，保证英文评估集指标仍可比），也可用 `TICKETMIND_REPLY_LANG=zh` 强制中文
 - **并发批量处理**：`/api/import` AI 模式线程池并发（默认 6），配合检索缓存（同工单第二次检索 0ms）
 
+## 数据准备（首次运行）
+
+数据资产不入库（`.gitignore` 已排除，避免仓库膨胀到百 MB 级）。首次运行按顺序重建，全程约 5–10 分钟：
+
+```bash
+python scripts/download_data.py   # 下载 Tobi-Bueck/customer-support-tickets → data/raw/tickets.parquet
+python scripts/preprocess.py      # 取 en 子集、清洗、分层划分 → data/processed/*.parquet
+python scripts/build_index.py     # 构建 BM25 词表 + 向量索引 → data/indexes/（约 1–3 分钟）
+```
+
+- 知识库规模 **19,782 条**英文历史工单；检索模型 `all-MiniLM-L6-v2` 首次运行自动下载（约 90MB，缓存在用户目录）
+- `data/fewshot.json`（静态 few-shot，检索器降级用）**已随仓库提供**，无需重建；如需重新生成：`python scripts/build_fewshot.py`
+- `data/tickets.db`（业务库）与 `data/feedback.jsonl`（人工反馈池）为运行时生成，不随仓库分发
+
 ## 快速开始
 
 ```bash
