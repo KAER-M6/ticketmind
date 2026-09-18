@@ -68,6 +68,15 @@ start.bat                 # 或 python -m uvicorn app.main:app --port 8000
 
 浏览器打开 <http://127.0.0.1:8000>。
 
+**Windows 一键启动**：双击 `start.bat` 即可（自检端口与环境 → 拉起服务 → 就绪后自动开浏览器）；停止用 `stop.bat`。想要桌面图标：
+
+```bash
+pip install pywin32
+python scripts/make_shortcuts.py   # 生成「工单智脑」与「工单智脑-停止服务」两个桌面快捷方式
+```
+
+详见 [部署说明.md](部署说明.md#一键启动与停止windows)。
+
 ## API
 
 | 方法 | 路径 | 说明 |
@@ -113,11 +122,12 @@ app/                 FastAPI 服务
   agents/            triage（分诊）· retriever（混合检索）· reply（回复生成）· feedback（人工反馈池）· lang（中文桥接）
   web/static/        审核台前端（单页，支持审核时纠正标签）
   db.py              SQLite 状态机 + 标签纠正记录（open → drafted → approved/rejected → resolved）
-scripts/             数据预处理、索引构建、评估（triage/rag/sc/dfs/reply/golden）
+scripts/             数据预处理、索引构建、评估（triage/rag/sc/dfs/reply/golden）、快捷方式生成
 tests/               pytest 单测
 data/                processed（parquet）· indexes（向量）· tickets.db · feedback.jsonl
+start.bat / stop.bat 一键启动 / 停止（自检端口与环境，就绪后自动开浏览器）
 设计说明.md           搭建思路 · 架构与数据流 · 功能说明 · 关键设计决策
-部署说明.md           部署步骤 · 数据资产表 · 环境要求
+部署说明.md           部署步骤 · 一键启动 · 数据资产表 · 环境要求
 ```
 
 ## 相关文档
