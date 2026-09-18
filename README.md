@@ -9,7 +9,11 @@
 | 分诊 type 准确率 | **90.8%** | n=500，macro-F1 0.909（基线 74.2%） |
 | 优先级判定 | **78.2%** | 基线 38.6% |
 | 混合检索 hit@5 | **99.5%** | BM25 + MiniLM 向量，RRF 融合 |
+| 反馈闭环净收益 | **+4.0pp** | 同批样本 A/B：87.0% → 91.0%（池内 60 条人工确认样本） |
 | Golden 回归集 | 20/20 (100%) | 固定 20 条，改 prompt 后必跑 |
+| 单测 | 38 passed / ~3s | 不联网 |
+
+> 反馈闭环实验：`python scripts/eval_feedback_gain.py --n 100 --pool 60`，两组除反馈池外完全一致，差值为净收益。
 
 ## 技术要点
 
@@ -48,9 +52,13 @@ start.bat                 # 或 python -m uvicorn app.main:app --port 8000
 ```bash
 pip install -r requirements-dev.txt
 pytest -q                                # 38 项单测，约 3s，不联网
+ruff check .                             # 全绿（I/F/E/UP/B 规则集）
 python scripts/golden_eval.py            # 20 条回归集，type 准确率 <85% 退出码 1
 python scripts/golden_eval.py --limit 5  # 快速冒烟
+python scripts/eval_feedback_gain.py     # 反馈闭环 A/B 增益
 ```
+
+`.github/workflows/ci.yml`：单测 + lint 必过；golden 在配置了 `DEEPSEEK_API_KEY` 且数据可用时自动启用。
 
 ## Docker 部署
 

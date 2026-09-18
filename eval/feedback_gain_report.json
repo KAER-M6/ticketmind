@@ -1,6 +1,6 @@
 {
   "n": 100,
-  "feedback_pool": 0,
+  "feedback_pool": 60,
   "baseline": {
     "n": 100,
     "correct": 87,
@@ -9,10 +9,10 @@
   },
   "with_feedback": {
     "n": 100,
-    "correct": 86,
-    "type_accuracy": 0.86,
-    "avg_feedback_used": 0.0
+    "correct": 91,
+    "type_accuracy": 0.91,
+    "avg_feedback_used": 2.0
   },
-  "delta": -0.01,
-  "generated_at": "2026-09-18T14:20:55"
+  "delta": 0.04,
+  "generated_at": "2026-09-18T14:22:32"
 }
