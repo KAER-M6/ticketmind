@@ -1,9 +1,9 @@
 {
-  "set": "en",
-  "n": 20,
-  "correct": 20,
+  "set": "zh",
+  "n": 16,
+  "correct": 16,
   "type_accuracy": 1.0,
-  "priority_accuracy": 0.65,
+  "priority_accuracy": 0.6875,
   "threshold": 0.85,
   "passed": true,
   "misses": []

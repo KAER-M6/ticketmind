@@ -17,12 +17,12 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from app import db
-from app.agents import feedback
+from app.agents import feedback, lang
 from app.agents.reply import generate_reply
 from app.agents.retriever import get_retriever
 from app.agents.triage import PRIORITY_DEFS, TYPE_DEFS, triage
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 
 # 并发度：批量 AI 处理用；DeepSeek 侧并发过高易触发连接抖动，默认 6
 IMPORT_WORKERS = int(os.getenv("TICKETMIND_IMPORT_WORKERS", "6"))
@@ -107,6 +107,8 @@ def health():
             "hit_rate": round(r.cache_hits / total_cache, 4) if total_cache else 0.0,
         },
         "feedback_pool": feedback.stats()["pool_size"],
+        "lang_bridge": lang.stats(),
+        "reply_lang": os.getenv("TICKETMIND_REPLY_LANG", "auto"),
         "auth_required": bool(API_KEY),
     }
 

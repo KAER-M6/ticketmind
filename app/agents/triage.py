@@ -38,9 +38,16 @@ SYSTEM_PROMPT = f"""你是企业 ITSM 工单分诊系统，负责对每张工单
 3. Change 的信号：update/upgrade/migrate/deploy/configure/implement/integrate/install 等"要动系统、改配置"的请求 → Change；纯信息咨询 → Request。
 4. priority：出现 data breach/security/outage/critical/urgent/大量用户受影响/数据丢失 → high；纯咨询、索要文档资料 → low；其余常规问题 → medium。
 5. 信息不足时保守处理：Request + medium。
+6. 工单可能是中文，按同一套语义判断（先在心里把中文诉求映射到上面的英文信号词）：
+   - Incident：崩了/打不开/登录不了/报错/无法访问/用不了/失败/中断
+   - Problem：又出问题/反复/一直/每次都/已经第三次/老毛病/根本原因/彻底解决/不要只重启
+   - Change：升级/迁移/部署/发布/上线/改配置/开通权限/安装/集成
+   - Request：请问/怎么操作/如何/帮我查一下/需要一份/流程是什么/开发票
+   - priority 中文信号：全公司/整个团队/所有用户无法工作/业务中断/数据丢失/安全漏洞 → high；
+     个人咨询、索要资料、了解流程 → low；其余 → medium。
 
 必须严格输出 JSON 对象，格式：
-{{"type": "Incident|Request|Problem|Change", "priority": "low|medium|high", "reason": "不超过50字的判断依据", "confidence": 0-1}}"""
+{{"type": "Incident|Request|Problem|Change", "priority": "low|medium|high", "reason": "不超过50字的判断依据（与工单同语言，中文工单用中文写）", "confidence": 0-1}}"""
 
 FEWSHOT_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "fewshot.json"
 

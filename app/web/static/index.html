@@ -85,11 +85,11 @@ tr:hover{background:#fafbfc}
       <div class="r2">
         <div>
           <label>主题（可选）</label>
-          <input id="in-subject" placeholder="e.g. Unable to log in to my account">
+          <input id="in-subject" placeholder="例如：共享网盘再次中断，本周第三次">
         </div>
         <div>
           <label>工单内容 *</label>
-          <textarea id="in-body" placeholder="描述用户问题…"></textarea>
+          <textarea id="in-body" placeholder="用中文描述用户问题即可，系统会自动完成中文 → 英文知识库的检索桥接…"></textarea>
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:center">
@@ -202,8 +202,8 @@ function toast(msg){
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
 $("btn-sample").onclick=()=>{
-  $("in-subject").value="Printer connectivity problems on MacBook";
-  $("in-body").value="Dear Support Team,\n\nI am currently facing connectivity problems with my printer on MacBook. The printer is not being detected, and I have already tried restarting both devices, but the issue persists. Could you please assist me in resolving this?";
+  $("in-subject").value="共享网盘再次中断，本周第三次";
+  $("in-body").value="我们销售团队用的共享网盘今天上午又打不开了，这已经是本周第三次。整个销售团队的同事现在都没法访问文件，大家的工作全部卡住了。之前提的工单重启一下就被关掉了，但问题一直反复出现。我们需要彻底解决，不要再只是重启。";
 };
 
 $("btn-process").onclick=async()=>{
@@ -230,7 +230,7 @@ $("btn-process").onclick=async()=>{
           </div>
         </div>
         <div>
-          <label>回复草稿 ${r.reply.needs_human?'<span class="badge b-Problem">建议人工升级</span>':""}</label>
+          <label>回复草稿 ${r.reply.needs_human?'<span class="badge b-Problem">建议人工升级</span>':""} <span style="color:var(--muted);font-size:12px;font-weight:400">${r.reply.lang==='zh'?'中文':'English'}</span></label>
           <div class="ticket-detail">${esc(r.reply.reply)}</div>
           <div class="ref">已保存到队列（待审核）· 工单号 ${r.ticket_id}</div>
         </div>

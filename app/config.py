@@ -18,5 +18,8 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
 DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
 
+# 回复草稿语言：auto=跟随工单语言（默认，保证英文评估集指标可比）；也可强制 zh / en
+REPLY_LANG = os.getenv("TICKETMIND_REPLY_LANG", "auto")
+
 DATASET_NAME = "Tobi-Bueck/customer-support-tickets"
 RAW_PARQUET = RAW_DIR / "tickets.parquet"

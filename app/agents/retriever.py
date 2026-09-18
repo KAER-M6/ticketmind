@@ -47,9 +47,22 @@ def _get_model():
     return _model
 
 
+_CJK_RUN = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]+")
+
+
 def tokenize(text: str) -> list[str]:
+    """英文按词切分；中文按「单字 + 双字」切分兜底。
+
+    中文没有空格，若不显式切分，rank_bm25 收到的词列表为空、BM25 一路直接归零。
+    正常链路里中文查询会先经过 lang.to_retrieval_query 转写成英文，
+    这里只是保底，确保转写失败时仍不做「静默空检索」。
+    """
     tokens = re.findall(r"[a-z0-9]+", text.lower())
-    return [t for t in tokens if t not in STOPWORDS and len(t) > 1]
+    tokens = [t for t in tokens if t not in STOPWORDS and len(t) > 1]
+    for seg in _CJK_RUN.findall(text):
+        tokens.extend(seg)
+        tokens.extend(seg[i : i + 2] for i in range(len(seg) - 1))
+    return tokens
 
 
 def _rrf(scores: np.ndarray, top: int = 100) -> dict[int, float]:
@@ -108,6 +121,8 @@ class HybridRetriever:
 
         同一 (query, k, mode) 命中缓存直接返回，省掉一次编码 + 一次全库打分
         （约 30~80ms）。演示重复跑同一张工单、批量导入抽样重叠时都能命中。
+
+        中文查询会先经 lang 桥接层转写成英文再检索（英文查询零开销）。
         """
         if self.df is None:
             raise RuntimeError("检索器未初始化，先调用 build() 或 load()")
@@ -119,8 +134,17 @@ class HybridRetriever:
             return [dict(h) for h in cached]
         self.cache_misses += 1
 
-        q_tokens = tokenize(query)
-        q_emb = _get_model().encode(query[:2000])
+        search_text = query
+        try:
+            from app.agents.lang import has_cjk, to_retrieval_query
+
+            if has_cjk(query):
+                search_text = to_retrieval_query(query)
+        except Exception as e:  # 桥接层异常不能拖垮检索
+            print(f"[retriever] 查询桥接失败，直接检索原文：{type(e).__name__}: {e}")
+
+        q_tokens = tokenize(search_text)
+        q_emb = _get_model().encode(search_text[:2000])
         q_emb = q_emb / np.linalg.norm(q_emb)
 
         n = len(self.df)
