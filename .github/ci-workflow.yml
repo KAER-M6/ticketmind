@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  unit:
+    name: 单测（不联网）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+      - name: pytest
+        run: pytest -q
+
+  lint:
+    name: Lint（ruff）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check .
+
+  golden:
+    name: Golden 回归集（需 API Key + 数据集）
+    runs-on: ubuntu-latest
+    needs: unit
+    # 注意：条件判定刻意不写在 job 级 if 上。
+    # GitHub Actions 的 jobs.<id>.if 只支持 github / needs / vars / inputs 上下文，
+    # 写 env 或 secrets 会静默求值为 false，导致整个 job 永不执行。
+    # 因此这里统一用 shell 在 step 里求值，行为可预期、也能在日志里看到原因。
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 检查运行条件（API Key 与数据资产）
+        id: guard
+        env:
+          DEEPSEEK_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          if [ -z "$DEEPSEEK_KEY" ]; then
+            echo "::notice::未配置 DEEPSEEK_API_KEY，跳过 golden 回归"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          elif [ ! -f data/processed/train.parquet ] || [ ! -f data/indexes/embeddings.npy ]; then
+            echo "::notice::数据资产未入库（.gitignore 排除），跳过 golden 回归"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: 安装依赖
+        if: steps.guard.outputs.ready == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: 跑固定回归集
+        if: steps.guard.outputs.ready == 'true'
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          HF_ENDPOINT: https://hf-mirror.com
+        run: python scripts/golden_eval.py --workers 4
+      - name: 上传回归报告
+        if: always() && steps.guard.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-report
+          path: eval/golden_report.json

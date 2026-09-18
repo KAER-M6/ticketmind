@@ -75,7 +75,10 @@ python scripts/golden_eval.py --limit 5  # 快速冒烟
 python scripts/eval_feedback_gain.py     # 反馈闭环 A/B 增益
 ```
 
-`.github/workflows/ci.yml`：单测 + lint 必过；golden 在配置了 `DEEPSEEK_API_KEY` 且数据可用时自动启用。
+`.github/ci-workflow.yml`：GitHub Actions 配置 —— 单测与 lint 必过；golden job 会先检查 `DEEPSEEK_API_KEY` 与数据资产，两者齐备才真正执行（否则该步跳过并在日志说明原因，不阻塞 CI）。
+
+> **为什么不在 `.github/workflows/` 下**：GitHub 不允许缺少 `workflow` scope 的凭据向该目录写入文件（防止 CI 被注入，属平台安全策略），推送时会被 `remote rejected`。
+> **启用方式**：把该文件移动到 `.github/workflows/ci.yml` 后提交 —— 使用具备 `workflow` 权限的凭据推送，或直接在 GitHub 网页上新建该文件并粘贴内容。
 
 ## Docker 部署
 
