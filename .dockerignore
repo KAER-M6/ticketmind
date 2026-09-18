@@ -3,6 +3,7 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.ruff_cache/
 .venv/
 venv/
 
@@ -11,7 +12,12 @@ data/raw/
 eval/
 *.zip
 *.db
+*.db-wal
+*.db-shm
+# 人工反馈池属于本地运行时数据，不进镜像（避免把本地审核记录带进去）
+data/feedback.jsonl
 
 # 备份与临时
 _backup_*/
 *.log
+*.lnk

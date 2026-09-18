@@ -1,7 +1,7 @@
 services:
   ticketmind:
     build: .
-    image: ticketmind:0.2
+    image: ticketmind:0.2.1
     container_name: ticketmind
     ports:
       - "8000:8000"

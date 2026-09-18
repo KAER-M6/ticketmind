@@ -115,6 +115,10 @@ cp .env.example .env      # 填 DEEPSEEK_API_KEY
 docker compose up -d      # 起服务；data/ 与模型缓存已挂载持久化
 ```
 
+- **前提**：`./data` 以 bind mount 挂进容器（业务库与反馈池需要持久化），会**覆盖镜像内自带的 data**。因此宿主机上必须先有数据资产 —— 用可部署 zip 包解压后即可，或从源码先跑一遍 `download_data.py → preprocess.py → build_index.py`。否则启动后检索会返回 503（索引缺失）
+- **CPU 版 torch**：`Dockerfile` 显式指定 `--index-url https://download.pytorch.org/whl/cpu` 单独安装 torch。Linux 上 `pip install torch` 默认解析到 CUDA 版（2GB+ 且拖入 nvidia-* 依赖），本项目只用 CPU 推理。源不可达时用 `--build-arg TORCH_INDEX=<镜像站>` 覆盖
+- 健康检查用容器自带的 `python -c urllib...`（`python:3.12-slim` 里没有 curl）
+
 ## 目录
 
 ```
