@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工单智脑 TicketMind</title>
+<link rel="icon" href="/static/favicon.png">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--line:#e2e5ea;--text:#1c2430;--muted:#667085;--blue:#185FA5;--blue-bg:#E6F1FB;--teal:#0F6E56;--teal-bg:#E1F5EE;--amber:#854F0B;--amber-bg:#FAEEDA;--red:#A32D2D;--red-bg:#FCEBEB}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+header{background:#fff;border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;gap:12px}
+header h1{font-size:17px;font-weight:600}
+header .tag{font-size:12px;color:var(--muted)}
+main{max-width:1200px;margin:0 auto;padding:20px 24px;display:grid;gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.card h2{font-size:14px;font-weight:600;margin-bottom:12px}
+.row{display:grid;gap:16px}
+.r2{grid-template-columns:1fr 1fr}
+@media(max-width:900px){.r2{grid-template-columns:1fr}}
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+input,textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;background:#fff}
+textarea{resize:vertical;min-height:110px}
+button{border:none;border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;font-weight:500}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--text)}
+.btn-red{background:var(--red);color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.b-Incident{background:var(--red-bg);color:var(--red)}
+.b-Request{background:var(--blue-bg);color:var(--blue)}
+.b-Problem{background:var(--amber-bg);color:var(--amber)}
+.b-Change{background:var(--teal-bg);color:var(--teal)}
+.p-high{background:var(--red-bg);color:var(--red)}
+.p-medium{background:var(--amber-bg);color:var(--amber)}
+.p-low{background:var(--teal-bg);color:var(--teal)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+@media(max-width:700px){.kpi{grid-template-columns:repeat(2,1fr)}}
+.kpi .k{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kpi .v{font-size:24px;font-weight:600;margin-top:4px}
+.kpi .l{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500;font-size:12px}
+tr:hover{background:#fafbfc}
+.ticket-detail{white-space:pre-wrap;font-size:13px;line-height:1.6;background:#f8f9fb;border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:10px}
+.ref{font-size:12px;color:var(--muted);margin-top:8px}
+.loading{color:var(--muted);font-size:13px;padding:8px 0}
+.sources{margin-top:8px;border-top:1px dashed var(--line);padding-top:8px}
+.sources details{margin-top:6px;font-size:12px}
+.sources summary{cursor:pointer;color:var(--blue)}
+.sources pre{background:#f8f9fb;border-radius:6px;padding:8px;font-size:12px;white-space:pre-wrap;margin-top:6px;color:var(--muted)}
+.status{font-size:12px;padding:2px 8px;border-radius:12px;background:#f1f3f6;color:var(--muted)}
+.st-approved{background:var(--teal-bg);color:var(--teal)}
+.st-drafted{background:var(--blue-bg);color:var(--blue)}
+.st-rejected{background:var(--red-bg);color:var(--red)}
+.st-resolved{background:#f1f3f6;color:var(--muted)}
+.mini{font-size:12px;padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);cursor:pointer}
+.mini:focus{outline:2px solid var(--blue-bg)}
+</style>
+</head>
+<body>
+<header>
+  <h1>工单智脑 TicketMind</h1>
+  <span class="tag">企业工单智能处理 · 分诊 / RAG / 回复生成 / 人工审核</span>
+</header>
+<main>
+  <div class="card">
+    <h2>KPI 概览</h2>
+    <div class="kpi">
+      <div class="k"><div class="l">工单总数</div><div class="v" id="k-total">-</div></div>
+      <div class="k"><div class="l">已通过审核</div><div class="v" id="k-approved">-</div></div>
+      <div class="k"><div class="l">需人工升级</div><div class="v" id="k-human">-</div></div>
+      <div class="k"><div class="l">自动化覆盖率</div><div class="v" id="k-coverage">-</div></div>
+      <div class="k"><div class="l">线上准确率 *</div><div class="v" id="k-acc">-</div></div>
+      <div class="k"><div class="l">反馈语料池</div><div class="v" id="k-fb">-</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">* 线上准确率 = 人工确认后未被纠正的比例；审核时纠正标签会自动回流进 few-shot 语料池</div>
+  </div>
+
+  <div class="card">
+    <h2>新工单处理</h2>
+    <div class="row">
+      <div class="r2">
+        <div>
+          <label>主题（可选）</label>
+          <input id="in-subject" placeholder="e.g. Unable to log in to my account">
+        </div>
+        <div>
+          <label>工单内容 *</label>
+          <textarea id="in-body" placeholder="描述用户问题…"></textarea>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn-blue" id="btn-process">智能处理</button>
+        <button class="btn-ghost" id="btn-sample">填入示例工单</button>
+      </div>
+    </div>
+    <div id="proc-result" style="margin-top:14px"></div>
+  </div>
+
+  <div class="card">
+    <h2>工单队列 <span id="q-count" style="color:var(--muted);font-weight:400"></span></h2>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+      <button class="btn-ghost f-status" data-s="all">全部</button>
+      <button class="btn-ghost f-status" data-s="drafted">待审核</button>
+      <button class="btn-ghost f-status" data-s="approved">已通过</button>
+      <button class="btn-ghost f-status" data-s="rejected">已驳回</button>
+      <span style="flex:1"></span>
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)" title="勾选后走真实 AI 链路（分诊+检索+草稿，并发执行），不勾选则用源数据秒级迁移">
+        <input id="ck-ai" type="checkbox"> AI 处理
+      </label>
+      <input id="in-import-n" type="number" value="10" min="1" max="500" style="width:70px" title="导入条数">
+      <button class="btn-blue" id="btn-import">批量导入历史工单</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>ID</th><th>主题</th><th>分类</th><th>优先级</th><th>草稿</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+let curStatus="all";
+
+async function api(path,opts={}){
+  const r=await fetch("/api"+path,{headers:{"Content-Type":"application/json"},...opts});
+  if(!r.ok) throw new Error((await r.json()).detail||r.status);
+  return r.json();
+}
+
+async function loadStats(){
+  try{
+    const s=await api("/stats");
+    $("k-total").textContent=s.total;
+    $("k-approved").textContent=s.approved;
+    $("k-human").textContent=s.needs_human;
+    $("k-coverage").textContent=(s.automation_coverage*100).toFixed(1)+"%";
+    vmSet("k-acc", s.online_accuracy===null||s.online_accuracy===undefined?"—":(s.online_accuracy*100).toFixed(1)+"%");
+    try{const f=await api("/feedback/stats"); vmSet("k-fb", f.pool_size);}catch(e){vmSet("k-fb","—");}
+  }catch(e){console.error(e);}
+}
+function vmSet(id,v){const el=$(id);if(el)el.textContent=v;}
+
+const TYPES=["Incident","Request","Problem","Change"];
+const PRIS=["low","medium","high"];
+function selCell(id,kind,val){
+  const opts=(kind==="type"?TYPES:PRIS);
+  return `<select class="mini" id="${kind}-${id}" title="可纠正后点通过，纠正结果会回流进 few-shot 语料池">`+
+    opts.map(o=>`<option ${o===val?"selected":""}>${o}</option>`).join("")+`</select>`;
+}
+
+async function loadTickets(){
+  try{
+    const ts=await api("/tickets?status="+curStatus);
+    $("q-count").textContent=`(${ts.length})`;
+    $("tb").innerHTML=ts.map(t=>`
+      <tr>
+        <td>${t.ticket_id}</td>
+        <td style="max-width:220px">${esc(t.subject||t.body.slice(0,60))}</td>
+        <td>${t.status==="drafted"?selCell(t.id,"type",t.pred_type):`<span class="badge b-${t.pred_type}">${t.pred_type}</span>`}</td>
+        <td>${t.status==="drafted"?selCell(t.id,"pri",t.pred_priority):`<span class="badge p-${t.pred_priority}">${t.pred_priority}</span>`}</td>
+        <td style="max-width:260px"><div class="ticket-detail" style="background:none;border:none;padding:0;margin:0;max-height:64px;overflow:hidden">${esc(t.draft||"-")}</div></td>
+        <td><span class="status st-${t.status}">${t.status}</span></td>
+        <td>
+          ${t.status==="drafted"?`<button class="btn-teal" onclick="act(${t.id},'approve')">通过</button> <button class="btn-red" onclick="act(${t.id},'reject')">驳回</button>`:""}
+          ${t.status==="approved"?`<button class="btn-ghost" onclick="act(${t.id},'resolve')">完成</button>`:""}
+        </td>
+      </tr>`).join("");
+  }catch(e){console.error(e);}
+}
+
+async function act(id,action){
+  let opts={method:"POST"};
+  if(action==="approve"){
+    const tEl=$("type-"+id), pEl=$("pri-"+id);
+    const body={};
+    if(tEl)body.type=tEl.value;
+    if(pEl)body.priority=pEl.value;
+    opts.body=JSON.stringify(body);
+  }
+  const r=await api(`/tickets/${id}/${action}`,opts);
+  if(action==="approve"){
+    toast(r.corrected?`已通过并纠正标签（反馈池 ${r.feedback_pool} 条）`:`已通过（反馈池 ${r.feedback_pool} 条）`);
+  }
+  loadTickets();loadStats();
+}
+
+function toast(msg){
+  let el=$("toast");
+  if(!el){el=document.createElement("div");el.id="toast";
+    el.style.cssText="position:fixed;bottom:24px;right:24px;background:var(--blue-bg);color:var(--blue);padding:10px 14px;border-radius:8px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:99";
+    document.body.appendChild(el);}
+  el.textContent=msg;el.style.opacity="1";
+  clearTimeout(window._tt);window._tt=setTimeout(()=>{el.style.opacity="0";},2600);
+}
+
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+$("btn-sample").onclick=()=>{
+  $("in-subject").value="Printer connectivity problems on MacBook";
+  $("in-body").value="Dear Support Team,\n\nI am currently facing connectivity problems with my printer on MacBook. The printer is not being detected, and I have already tried restarting both devices, but the issue persists. Could you please assist me in resolving this?";
+};
+
+$("btn-process").onclick=async()=>{
+  const body=$("in-body").value.trim();
+  if(!body){alert("请填写工单内容");return;}
+  const btn=$("btn-process");btn.disabled=true;btn.textContent="处理中…";
+  $("proc-result").innerHTML=`<div class="loading">正在分诊 → 检索知识库 → 生成回复草稿（约 10-30 秒）…</div>`;
+  try{
+    const r=await api("/process",{method:"POST",body:JSON.stringify({subject:$("in-subject").value,body})});
+    $("proc-result").innerHTML=`
+      <div style="display:grid;gap:12px">
+        <div class="r2">
+          <div><label>分诊结果</label>
+            <div><span class="badge b-${r.triage.type}">${r.triage.type}</span> <span class="badge p-${r.triage.priority}">${r.triage.priority}</span> <span style="color:var(--muted);font-size:12px">置信度 ${(r.triage.confidence*100).toFixed(0)}%</span></div>
+            <div style="margin-top:8px;font-size:12px;color:var(--muted)">${esc(r.triage.reason)}</div>
+          </div>
+          <div><label>检索引用（Top-5 相似历史工单）</label>
+            <div class="sources">
+            ${r.hits.slice(0,5).map((h,i)=>`
+              <details><summary>#${i+1} [${h.type}|${h.queue}] score=${h.score}</summary>
+                <pre>${esc(h.text.slice(0,220))}\n\n→ 历史答复: ${esc(h.answer.slice(0,300))}</pre>
+              </details>`).join("")}
+            </div>
+          </div>
+        </div>
+        <div>
+          <label>回复草稿 ${r.reply.needs_human?'<span class="badge b-Problem">建议人工升级</span>':""}</label>
+          <div class="ticket-detail">${esc(r.reply.reply)}</div>
+          <div class="ref">已保存到队列（待审核）· 工单号 ${r.ticket_id}</div>
+        </div>
+      </div>`;
+  }catch(e){$("proc-result").innerHTML=`<div style="color:var(--red)">处理失败: ${esc(e.message)}</div>`;}
+  finally{btn.disabled=false;btn.textContent="智能处理";loadTickets();loadStats();}
+};
+
+document.querySelectorAll(".f-status").forEach(b=>b.onclick=()=>{
+  curStatus=b.dataset.s;
+  document.querySelectorAll(".f-status").forEach(x=>x.style.background="");
+  b.style.background="var(--blue-bg)";
+  loadTickets();
+});
+
+$("btn-import").onclick=async()=>{
+  const n=parseInt($("in-import-n").value)||10;
+  const aiMode=$("ck-ai")?.checked;
+  const btn=$("btn-import");btn.disabled=true;btn.textContent=`导入 ${n} 条中…`;
+  try{
+    const r=await api("/import",{method:"POST",body:JSON.stringify({n,process:!!aiMode})});
+    const fail=r.failed?`，失败 ${r.failed} 条（已跳过）`:"";
+    const mode=r.mode==="migrate"?"源数据快速迁移":`AI 全链路处理 · 并发 ${r.workers}`;
+    alert(`已导入 ${r.imported} 条历史工单（${mode}）${fail}，全部进入待审核队列`);
+    loadTickets();loadStats();
+  }catch(e){alert("导入失败: "+e.message);}
+  finally{btn.disabled=false;btn.textContent="批量导入历史工单";}
+};
+
+loadStats();loadTickets();
+</script>
+</body>
+</html>

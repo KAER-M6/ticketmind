@@ -1,0 +1,17 @@
+.git
+.env
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# 数据：原始集体积大且非必需；向量索引要保留（镜像自带可独立跑）
+data/raw/
+eval/
+*.zip
+*.db
+
+# 备份与临时
+_backup_*/
+*.log

@@ -1,0 +1,36 @@
+# --- 密钥 ---
+.env
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+env/
+.pytest_cache/
+.ruff_cache/
+
+# --- 大数据资产（新环境用 scripts/ 重建） ---
+data/raw/*.parquet
+data/raw/*.csv
+data/processed/*.parquet
+data/processed/*.csv
+data/indexes/
+
+# --- 运行时数据（演示数据与反馈池不入库；评估报告保留作证据） ---
+data/tickets.db
+data/tickets.db-wal
+data/tickets.db-shm
+data/feedback.jsonl
+eval/*
+!eval/*.json
+logs/
+*.log
+
+# --- 交付/构建产物 ---
+*.zip
+dist/
+build/
+
+# --- 本地备份 ---
+_backup_*/

@@ -1,0 +1,17 @@
+# ruff 配置：只开实用规则集，保持零噪音
+line-length = 100
+target-version = "py311"
+
+exclude = [".venv", "data", "eval", "_backup_d4_20260918_1406"]
+
+[lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = [
+    "E501",  # 行长由 line-length 交给 formatter 处理，不阻塞 CI
+    "B008",  # FastAPI 依赖注入以函数调用作默认值属正常用法
+]
+
+[lint.per-file-ignores]
+# 评估脚本需要先 sys.path 再 import，无法满足 E402
+"scripts/*.py" = ["E402"]
+"tests/*.py" = ["E402"]

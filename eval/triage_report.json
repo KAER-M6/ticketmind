@@ -1,0 +1,129 @@
+{
+  "n": 500,
+  "cost_seconds": 388.7,
+  "type": {
+    "accuracy": 0.742,
+    "macro_f1": 0.7414,
+    "weighted_f1": 0.7414
+  },
+  "priority": {
+    "accuracy": 0.386,
+    "macro_f1": 0.3779,
+    "weighted_f1": 0.3929
+  },
+  "type_report": {
+    "Change": {
+      "precision": 0.9130434782608695,
+      "recall": 0.7924528301886793,
+      "f1-score": 0.8484848484848485,
+      "support": 53.0
+    },
+    "Incident": {
+      "precision": 0.7239583333333334,
+      "recall": 0.702020202020202,
+      "f1-score": 0.7128205128205128,
+      "support": 198.0
+    },
+    "Problem": {
+      "precision": 0.45794392523364486,
+      "recall": 0.47115384615384615,
+      "f1-score": 0.46445497630331756,
+      "support": 104.0
+    },
+    "Request": {
+      "precision": 0.9096774193548387,
+      "recall": 0.9724137931034482,
+      "f1-score": 0.94,
+      "support": 145.0
+    },
+    "accuracy": 0.742,
+    "macro avg": {
+      "precision": 0.7511557890456716,
+      "recall": 0.7345101678665439,
+      "f1-score": 0.7414400844021697,
+      "support": 500.0
+    },
+    "weighted avg": {
+      "precision": 0.7425288967571535,
+      "recall": 0.742,
+      "f1-score": 0.7414229520874072,
+      "support": 500.0
+    }
+  },
+  "priority_report": {
+    "high": {
+      "precision": 0.5643564356435643,
+      "recall": 0.296875,
+      "f1-score": 0.3890784982935154,
+      "support": 192.0
+    },
+    "low": {
+      "precision": 0.23529411764705882,
+      "recall": 0.43137254901960786,
+      "f1-score": 0.3044982698961938,
+      "support": 102.0
+    },
+    "medium": {
+      "precision": 0.4339622641509434,
+      "recall": 0.44660194174757284,
+      "f1-score": 0.44019138755980863,
+      "support": 206.0
+    },
+    "accuracy": 0.386,
+    "macro avg": {
+      "precision": 0.4112042724805221,
+      "recall": 0.3916164969223936,
+      "f1-score": 0.3779227185831726,
+      "support": 500.0
+    },
+    "weighted avg": {
+      "precision": 0.4435053241173174,
+      "recall": 0.386,
+      "f1-score": 0.39288264207817464,
+      "support": 500.0
+    }
+  },
+  "type_confusion": {
+    "Change": {
+      "Change": 42,
+      "Incident": 0,
+      "Problem": 1,
+      "Request": 10
+    },
+    "Incident": {
+      "Change": 0,
+      "Incident": 139,
+      "Problem": 57,
+      "Request": 2
+    },
+    "Problem": {
+      "Change": 0,
+      "Incident": 53,
+      "Problem": 49,
+      "Request": 2
+    },
+    "Request": {
+      "Change": 4,
+      "Incident": 0,
+      "Problem": 0,
+      "Request": 141
+    }
+  },
+  "priority_confusion": {
+    "high": {
+      "high": 57,
+      "low": 62,
+      "medium": 73
+    },
+    "low": {
+      "high": 11,
+      "low": 44,
+      "medium": 47
+    },
+    "medium": {
+      "high": 33,
+      "low": 81,
+      "medium": 92
+    }
+  }
+}

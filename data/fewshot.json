@@ -1,0 +1,54 @@
+[
+  {
+    "input": "工单内容：\n\nA billing error happened during the recent investment report generation. This might have been due to data integration issues or software conflicts. We have reviewed the payment settings and checked the software versions for updates to resolve the issue.",
+    "output": "{\"type\": \"Incident\", \"priority\": \"low\", \"reason\": \"用户报障，服务故障需尽快恢复\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nA billing discrepancy has arisen on Adobe Effects GitHub following the latest system update. Despite attempts to reconcile the account and contacting customer service, a resolution has not been reached. Assistance is required to address this issue.",
+    "output": "{\"type\": \"Incident\", \"priority\": \"medium\", \"reason\": \"用户报障，服务故障需尽快恢复\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nA critical system outage has occurred, affecting investment analysis processes. This issue may be due to software incompatibilities or network problems. Attempts to restart affected applications and clear caches have been made but the problem persists. Immediate assistance is needed to resolve the issue and minimize its impact on operations.",
+    "output": "{\"type\": \"Incident\", \"priority\": \"high\", \"reason\": \"用户报障，服务故障需尽快恢复\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nCan you provide information on how SaaS integrates with third-party products such as MATLAB and Avast? I would like to know about the compatibility, potential limitations, and benefits of using SaaS products. Additionally, could you specify any particular requirements or setup needed for integration?",
+    "output": "{\"type\": \"Request\", \"priority\": \"low\", \"reason\": \"信息咨询/标准服务请求\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nCan you give more information on how Alteryx enhances investment optimization in data analytics? I am interested in learning about its capabilities.",
+    "output": "{\"type\": \"Request\", \"priority\": \"medium\", \"reason\": \"信息咨询/标准服务请求\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nCan you offer guidance on expanding a project management SaaS platform? Please share details about your current configuration and any particular challenges you're encountering. I am happy to help and provide customized recommendations.",
+    "output": "{\"type\": \"Request\", \"priority\": \"high\", \"reason\": \"信息咨询/标准服务请求\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nA data breach has been detected in the hospital's system, potentially compromising the security of patient medical data. Despite the implementation of additional security measures and software updates, the issue continues to persist. Immediate assistance is required to resolve this matter.",
+    "output": "{\"type\": \"Problem\", \"priority\": \"low\", \"reason\": \"故障反复出现，需定位根因\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nA critical bug has been reported in the project management SaaS integration, leading to disruptions. Recent API changes might be the cause. I have already attempted to reset the integrations and verify the API keys, but the issue still persists.",
+    "output": "{\"type\": \"Problem\", \"priority\": \"medium\", \"reason\": \"故障反复出现，需定位根因\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nA data breach has been detected at a healthcare facility, putting medical data at risk. The likely cause is outdated systems and inadequate security measures. We have initiated antivirus scans and are conducting a security audit to identify and address vulnerabilities. Immediate action is required to protect sensitive information and prevent further breaches.",
+    "output": "{\"type\": \"Problem\", \"priority\": \"high\", \"reason\": \"故障反复出现，需定位根因\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nA marketing agency is encountering performance issues with their digital tools, specifically Adobe Audition and Teams. These problems are suspected to be due to network hardware issues. The current solutions have mitigated the issues, but the team is now requiring assistance to fully resolve the problems and get the digital tools functioning correctly again.",
+    "output": "{\"type\": \"Problem\", \"priority\": \"low\", \"reason\": \"故障反复出现，需定位根因\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nCustomer Support, I am bringing to your attention the need to update billing integration across various products. Enhancing the accuracy and synchronization of payment processing systems is essential. Currently, discrepancies are causing errors and delays in payment processing. I kindly request that this matter be addressed promptly with the necessary updates to improve the customer experience and minimize potential losses caused by incorrect billing. Your prompt attention to this issue is appreciated, and I look forward to your response soon.",
+    "output": "{\"type\": \"Change\", \"priority\": \"low\", \"reason\": \"变更系统配置或实施调整\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nCombine HubSpot CRM with Microsoft OneNote to optimize project management workflows and boost documentation efficiency. This integration facilitates smooth data exchange, automated note-taking, and enhanced collaboration. By connecting these tools, you can minimize manual data entry, increase productivity, and make more informed decisions based on accurate data.",
+    "output": "{\"type\": \"Change\", \"priority\": \"medium\", \"reason\": \"变更系统配置或实施调整\", \"confidence\": 0.9}"
+  },
+  {
+    "input": "工单内容：\n\nAsks for an update on the data analytics software to enhance investment optimization and boost decision-making capabilities.",
+    "output": "{\"type\": \"Change\", \"priority\": \"high\", \"reason\": \"变更系统配置或实施调整\", \"confidence\": 0.9}"
+  }
+]

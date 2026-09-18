@@ -1,0 +1,9 @@
+{
+  "n": 20,
+  "correct": 20,
+  "type_accuracy": 1.0,
+  "priority_accuracy": 0.75,
+  "threshold": 0.85,
+  "passed": true,
+  "misses": []
+}
